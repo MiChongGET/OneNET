@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/temp"
+            android:icon="@drawable/temp"
+            android:title="温度" />
+        <item
+            android:id="@+id/hum"
+            android:icon="@drawable/hum"
+            android:title="湿度" />
+        <item
+            android:id="@+id/data_total"
+            android:icon="@drawable/total"
+            android:title="数据集合" />
+    </group>
+
+    <item android:title="设置">
+        <menu>
+            <item
+                android:id="@+id/setting"
+                android:icon="@drawable/setting"
+                android:title="开发者设置" />
+        </menu>
+    </item>
+
+</menu>
