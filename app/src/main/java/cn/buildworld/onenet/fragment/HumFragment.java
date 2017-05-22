@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.chinamobile.iot.onenet.OneNetApi;
 import com.chinamobile.iot.onenet.OneNetApiCallback;
 import com.google.gson.Gson;
@@ -36,6 +38,7 @@ public class HumFragment extends Fragment {
     private String h_id ;
     private String h_time ;
     private String h_symbol;
+    private TextView t_hum;
     //获取指定数据
     private Function2<String> mQuerySingleDatastreamFunction = new Function2<String>() {
         @Override
@@ -71,6 +74,9 @@ public class HumFragment extends Fragment {
 //                mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
 //            }
 //        });
+        t_hum = (TextView) v.findViewById(R.id.t_hum);
+        mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
+
 
         return v;
     }
@@ -112,7 +118,9 @@ public class HumFragment extends Fragment {
          h_id = data.getString("id");
          h_time = data.getString("update_at");
          h_symbol = data.getString("unit_symbol");
-        Log.i(TAG, "湿度："+h_id+"------"+h_time+"------"+h_value+h_symbol);
+         Log.i(TAG, "湿度："+h_id+"------"+h_time+"------"+h_value+h_symbol);
+
+         t_hum.setText(h_value+h_symbol);
 
     }
 
