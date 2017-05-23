@@ -8,10 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.baoyz.widget.PullRefreshLayout;
 import com.chinamobile.iot.onenet.OneNetApi;
 import com.chinamobile.iot.onenet.OneNetApiCallback;
 import com.google.gson.Gson;
@@ -66,15 +64,11 @@ public class HumFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layoutInflater = inflater;
         View v = inflater.inflate(R.layout.humfragment,container,false);
+
         final String saveDeviceNum = Preferences.getInstance(getActivity()).getString(Preferences.Device_Num,null);
-//        Button getHum = (Button) v.findViewById(R.id.getHum);
-//        getHum.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
-//            }
-//        });
+
         t_hum = (TextView) v.findViewById(R.id.t_hum);
+
         mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
 
 
@@ -104,10 +98,8 @@ public class HumFragment extends Fragment {
             //将取得数据进行解析
             getSingleData(response);
 
-//            showjson.setText(unit+value+time);
 
         }
-        //DisplayApiRespActivity.actionDisplayApiResp(getActivity(), response);
     }
 
     //获取单个数据流

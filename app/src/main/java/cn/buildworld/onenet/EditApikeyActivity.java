@@ -1,5 +1,6 @@
 package cn.buildworld.onenet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -76,7 +77,7 @@ public class EditApikeyActivity extends AppCompatActivity {
 
             OneNetApi.setAppKey(key);
             Toast.makeText(this, "设备号："+device_num+"  api_key"+key, Toast.LENGTH_SHORT).show();
-
+            startActivity(new Intent(EditApikeyActivity.this,MainActivity.class));
             finish();
         }
     }

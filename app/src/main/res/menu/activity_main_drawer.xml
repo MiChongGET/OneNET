@@ -5,11 +5,11 @@
         <item
             android:id="@+id/temp"
             android:icon="@drawable/temp"
-            android:title="温度" />
+            android:title="湿度" />
         <item
             android:id="@+id/hum"
             android:icon="@drawable/hum"
-            android:title="湿度" />
+            android:title="温度" />
         <item
             android:id="@+id/data_total"
             android:icon="@drawable/total"
