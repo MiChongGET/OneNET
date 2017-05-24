@@ -36,6 +36,7 @@ public class TempFragment extends Fragment {
     private String t_time ;
     private String t_symbol;
     private TextView t_temp;
+    private TextView temp_time;
 
     //获取指定数据
     private TempFragment.Function2<String> mQuerySingleDatastreamFunction = new Function2<String>() {
@@ -65,6 +66,8 @@ public class TempFragment extends Fragment {
         final String saveDeviceNum = Preferences.getInstance(getActivity()).getString(Preferences.Device_Num,null);
 
         t_temp = (TextView) v.findViewById(R.id.t_temp);
+        temp_time = (TextView) v.findViewById(R.id.t_time);
+
         mQuerySingleDatastreamFunction.apply(saveDeviceNum,"temperature");
         return v;
     }
@@ -82,6 +85,7 @@ public class TempFragment extends Fragment {
         Log.i(TAG, "湿度："+t_id+"------"+t_time+"------"+t_value+t_symbol);
 
         t_temp.setText(t_value+t_symbol);
+        temp_time.setText("更新时间："+t_time);
 
     }
     //获取所有数据的接口

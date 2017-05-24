@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import cn.buildworld.onenet.fragment.HumFragment;
 import cn.buildworld.onenet.fragment.TempFragment;
+import cn.buildworld.onenet.fragment.TotalFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private HumFragment humFragment;
     private TempFragment tempFragment;
     private DrawerLayout drawer;
+    private TotalFragment totalFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,27 +66,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
 //    @SuppressWarnings("StatementWithEmptyBody")
 //    @Override
@@ -143,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.data_total:
+                    totalFragment = TotalFragment.newInstance();
+                    ft.replace(R.id.fragment,totalFragment).commit();
+                    getSupportActionBar().setTitle("数据集合");
                     break;
                 case R.id.setting:
                     startActivity(new Intent(MainActivity.this,EditApikeyActivity.class));

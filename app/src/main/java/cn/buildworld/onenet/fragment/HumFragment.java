@@ -37,6 +37,7 @@ public class HumFragment extends Fragment {
     private String h_time ;
     private String h_symbol;
     private TextView t_hum;
+    private TextView hum_time;
     //获取指定数据
     private Function2<String> mQuerySingleDatastreamFunction = new Function2<String>() {
         @Override
@@ -68,6 +69,7 @@ public class HumFragment extends Fragment {
         final String saveDeviceNum = Preferences.getInstance(getActivity()).getString(Preferences.Device_Num,null);
 
         t_hum = (TextView) v.findViewById(R.id.t_hum);
+        hum_time = (TextView) v.findViewById(R.id.h_time);
 
         mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
 
@@ -113,6 +115,7 @@ public class HumFragment extends Fragment {
          Log.i(TAG, "湿度："+h_id+"------"+h_time+"------"+h_value+h_symbol);
 
          t_hum.setText(h_value+h_symbol);
+         hum_time.setText("更新时间："+h_time);
 
     }
 
