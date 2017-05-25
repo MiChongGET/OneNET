@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="80dp">
 
     <com.baoyz.widget.PullRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -15,7 +16,8 @@
             android:id="@+id/list_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:scrollbars="none" >
+            android:scrollbars="none"
+            android:divider="#00000000">
         </ListView>
     </com.baoyz.widget.PullRefreshLayout>
 

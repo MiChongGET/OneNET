@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    app:cardCornerRadius="5dp"
+    app:cardUseCompatPadding="true"
+    app:cardPreventCornerOverlap="false"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:stateListAnimator="@drawable/lift_on_touch"
+    android:clickable="true"
+    android:layout_margin="8dp"
+    android:paddingTop="8dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/total_temp"
+                android:text="温度:31℃"
+                android:textSize="30dp"
+                android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/total_hum"
+                android:text="湿度:45%"
+                android:textSize="30dp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            >
+            <ImageView
+                android:id="@+id/temp_sign"
+                android:src="@drawable/safe"
+                android:gravity="center"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/hum_sign"
+                android:src="@drawable/safe"
+                android:gravity="center"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <TextView
+            android:padding="4dp"
+            android:textColor="#ee00"
+            android:id="@+id/total_time"
+            android:text="更新时间:"
+            android:gravity="center|right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

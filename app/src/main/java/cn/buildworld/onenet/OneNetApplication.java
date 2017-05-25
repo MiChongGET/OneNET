@@ -27,6 +27,10 @@ public class OneNetApplication extends Application {
 
         if(savedApiKey != null){
             OneNetApi.setAppKey(savedApiKey);
-        }else startActivity(new Intent(OneNetApplication.this,EditApikeyActivity.class));
+        }else {
+            Intent intent = new Intent(this,EditApikeyActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivity(intent);
+        }
     }
 }
