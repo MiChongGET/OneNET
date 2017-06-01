@@ -1,9 +1,14 @@
 package cn.buildworld.onenet.fragment;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +34,7 @@ import cn.buildworld.onenet.util.Preferences;
 public class TempFragment extends Fragment {
 
     private LayoutInflater layoutInflater;
-    private String TAG = "湿度";
+    private String TAG = "温度";
 
     private String t_value ;
     private String t_id ;
@@ -37,6 +42,12 @@ public class TempFragment extends Fragment {
     private String t_symbol;
     private TextView t_temp;
     private TextView temp_time;
+    private  String saveDeviceNum;
+
+    //广播接收处理数据
+    private LocalBroadcastManager broadcastManager;
+    private IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
 
     //获取指定数据
     private TempFragment.Function2<String> mQuerySingleDatastreamFunction = new Function2<String>() {
@@ -63,15 +74,41 @@ public class TempFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layoutInflater = inflater;
         View v = inflater.inflate(R.layout.tempfragment,container,false);
-        final String saveDeviceNum = Preferences.getInstance(getActivity()).getString(Preferences.Device_Num,null);
+         saveDeviceNum = Preferences.getInstance(getActivity()).getString(Preferences.Device_Num,null);
 
         t_temp = (TextView) v.findViewById(R.id.t_temp);
         temp_time = (TextView) v.findViewById(R.id.t_time);
-
         mQuerySingleDatastreamFunction.apply(saveDeviceNum,"temperature");
         return v;
     }
 
+
+    //获取广播信息
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //处理广播
+        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("datachange");
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.i(TAG, "接收到了广播");
+                mQuerySingleDatastreamFunction.apply(saveDeviceNum,"temperature");
+            }
+        };
+        broadcastManager.registerReceiver(receiver,intentFilter);
+    }
+
+    //注销广播
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        broadcastManager.unregisterReceiver(receiver);
+    }
 
     //获取温湿度信息
     //获取单个数据流

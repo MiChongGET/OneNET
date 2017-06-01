@@ -24,6 +24,15 @@
         <activity android:name=".EditApikeyActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <service android:name=".service.GetDataService">
+        </service>
+
+        <receiver android:name=".receiver.DataChangeBroadcast">
+            <intent-filter android:priority="1000">
+                <action android:name="com.datachange"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

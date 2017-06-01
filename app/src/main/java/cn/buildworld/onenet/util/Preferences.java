@@ -12,6 +12,8 @@ public class Preferences {
 
     public static final String API_KEY = "api_key";
     public static final String Device_Num = "device_Num";
+    public static final String UpdateTime ="updatetime";//更新时间
+
     
     private static Preferences sPreferences;
     private final SharedPreferences mShareferences;

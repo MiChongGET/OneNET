@@ -1,9 +1,14 @@
 package cn.buildworld.onenet.fragment;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +43,7 @@ public class HumFragment extends Fragment {
     private String h_symbol;
     private TextView t_hum;
     private TextView hum_time;
+    private String saveDeviceNum;
     //获取指定数据
     private Function2<String> mQuerySingleDatastreamFunction = new Function2<String>() {
         @Override
@@ -59,6 +65,13 @@ public class HumFragment extends Fragment {
     }
 
 
+    //广播接收处理数据
+    private LocalBroadcastManager broadcastManager;
+    private IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
+
+    //记录时间
+    private Preferences preferences;
 
     @Nullable
     @Override
@@ -66,19 +79,44 @@ public class HumFragment extends Fragment {
         layoutInflater = inflater;
         View v = inflater.inflate(R.layout.humfragment,container,false);
 
-        final String saveDeviceNum = Preferences.getInstance(getActivity()).getString(Preferences.Device_Num,null);
+        saveDeviceNum = Preferences.getInstance(getActivity()).getString(Preferences.Device_Num,null);
 
         t_hum = (TextView) v.findViewById(R.id.t_hum);
         hum_time = (TextView) v.findViewById(R.id.h_time);
 
         mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
 
+        //获取时间
+        preferences = Preferences.getInstance(getActivity());
 
         return v;
     }
 
-    //获取温湿度信息
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //处理广播
+        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("datachange");
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.i(TAG, "湿度: "+"接收到了广播");
+                mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
+            }
+        };
+        broadcastManager.registerReceiver(receiver,intentFilter);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        broadcastManager.unregisterReceiver(receiver);
+    }
+
+
+    //获取温湿度信息
 
 
     //获取所有数据的接口
@@ -113,6 +151,10 @@ public class HumFragment extends Fragment {
          h_time = data.getString("update_at");
          h_symbol = data.getString("unit_symbol");
          Log.i(TAG, "湿度："+h_id+"------"+h_time+"------"+h_value+h_symbol);
+
+         //记录时间
+         preferences.putString(Preferences.UpdateTime,h_time);
+
 
          t_hum.setText(h_value+h_symbol);
          hum_time.setText("更新时间："+h_time);
@@ -158,7 +200,6 @@ public class HumFragment extends Fragment {
             Log.i(TAG, "数据获取失败");
         }
     }
-
 
 
 }

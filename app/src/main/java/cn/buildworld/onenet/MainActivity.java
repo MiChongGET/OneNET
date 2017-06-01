@@ -3,31 +3,46 @@ package cn.buildworld.onenet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import cn.buildworld.onenet.fragment.HumFragment;
 import cn.buildworld.onenet.fragment.TempFragment;
 import cn.buildworld.onenet.fragment.TotalFragment;
+import cn.buildworld.onenet.service.GetDataService;
+import cn.buildworld.onenet.util.Preferences;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private final String TAG = "主界面";
     private HumFragment humFragment;
     private TempFragment tempFragment;
     private DrawerLayout drawer;
     private TotalFragment totalFragment;
+    private Intent getdataIntent;
+//    private BroadcastReceiver receiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String actionName = intent.getAction();
+//            //判断接收到的广播是否是想要的
+//            if (actionName.equals("datachange")){
+//                Log.i(TAG, "onReceive: "+"接收到了广播");
+//
+//            }
+//        }
+//    };
+
+    //记录时间
+    private Preferences preferences;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +69,20 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, HumFragment.newInstance()).commit();
+
+
+
+
+        //开启获取数据的服务
+        getdataIntent = new Intent();
+        getdataIntent.setClass(MainActivity.this, GetDataService.class);
+        startService(getdataIntent);
+
+        //接收广播
+//        registerBoradcastReceiver();
+
+        //startService(new Intent(MainActivity.this,GetDataService.class));
+
     }
 
     @Override
@@ -65,6 +94,14 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+//    //注册广播
+//    public void registerBoradcastReceiver(){
+//        IntentFilter myIntentFilter = new IntentFilter();
+//        myIntentFilter.addAction("datachange");
+//        registerReceiver(receiver, myIntentFilter);
+//    }
+
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
