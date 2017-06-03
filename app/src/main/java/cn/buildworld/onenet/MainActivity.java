@@ -12,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import cn.buildworld.onenet.fragment.FirstFragmet;
 import cn.buildworld.onenet.fragment.HumFragment;
+import cn.buildworld.onenet.fragment.SecondFragmet;
 import cn.buildworld.onenet.fragment.TempFragment;
 import cn.buildworld.onenet.fragment.TotalFragment;
 import cn.buildworld.onenet.service.GetDataService;
@@ -25,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
     private TempFragment tempFragment;
     private DrawerLayout drawer;
     private TotalFragment totalFragment;
+    private FirstFragmet firstFragmet;
+    private SecondFragmet secondFragmet;
+
+
     private Intent getdataIntent;
 //    private BroadcastReceiver receiver = new BroadcastReceiver() {
 //        @Override
@@ -68,15 +74,15 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, HumFragment.newInstance()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment,FirstFragmet.newInstance()).commit();
 
 
 
 
         //开启获取数据的服务
-        getdataIntent = new Intent();
-        getdataIntent.setClass(MainActivity.this, GetDataService.class);
-        startService(getdataIntent);
+//        getdataIntent = new Intent();
+//        getdataIntent.setClass(MainActivity.this, GetDataService.class);
+//        startService(getdataIntent);
 
         //接收广播
 //        registerBoradcastReceiver();
@@ -170,14 +176,20 @@ public class MainActivity extends AppCompatActivity {
 
             switch (item.getItemId()) {
                 case R.id.temp:
-                    humFragment = HumFragment.newInstance();
-                    ft.replace(R.id.fragment, humFragment).commit();
+//                    humFragment = HumFragment.newInstance();
+//                    ft.replace(R.id.fragment, humFragment).commit();
+
+                    firstFragmet = FirstFragmet.newInstance();
+                    ft.replace(R.id.fragment,firstFragmet).commit();
                     getSupportActionBar().setTitle("湿度检测");
                     break;
 
                 case R.id.hum:
-                    tempFragment = TempFragment.newInstance();
-                    ft.replace(R.id.fragment, tempFragment).commit();
+//                    tempFragment = TempFragment.newInstance();
+//                    ft.replace(R.id.fragment, tempFragment).commit();
+
+                    secondFragmet = SecondFragmet.newInstance();
+                    ft.replace(R.id.fragment,secondFragmet).commit();
                     getSupportActionBar().setTitle("温度检测");
                     break;
 
