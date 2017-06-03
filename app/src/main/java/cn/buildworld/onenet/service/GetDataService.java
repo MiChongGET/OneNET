@@ -3,15 +3,12 @@ package cn.buildworld.onenet.service;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.chinamobile.iot.onenet.OneNetApi;
 import com.chinamobile.iot.onenet.OneNetApiCallback;
@@ -19,14 +16,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
-import cn.buildworld.onenet.adapter.TotalAdapter;
-import cn.buildworld.onenet.bean.TotalBean;
 import cn.buildworld.onenet.receiver.DataChangeBroadcast;
+import cn.buildworld.onenet.util.HttpUtils;
 import cn.buildworld.onenet.util.Preferences;
 
 /**
@@ -44,11 +39,20 @@ public class GetDataService extends Service {
     private Preferences preferences;
     private String time_value;
     private String saveDeviceNum;
+    private String URL;
+
     private Handler handler = new Handler(){
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            if (msg.arg1 == 1){
+//                mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
+
+                mQueryMultiDataStreamFunction.apply(saveDeviceNum);
+                Log.i(TAG, "handleMessage: "+"服务判断数据是否发生了更新");
+
+            }
 
         }
     };
@@ -58,13 +62,22 @@ public class GetDataService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-    //获取指定数据
-    private GetDataService.Function2<String> mQuerySingleDatastreamFunction = new GetDataService.Function2<String>() {
+//    //获取指定数据
+//    private GetDataService.Function2<String> mQuerySingleDatastreamFunction = new GetDataService.Function2<String>() {
+//        @Override
+//        public void apply(String deviceId, String dataStreamId) {
+//            OneNetApi.querySingleDataStream(deviceId, dataStreamId, new GetDataService.Callback());
+//        }
+//    };
+
+    //获取所有的数据
+    private GetDataService.Function1<String> mQueryMultiDataStreamFunction = new GetDataService.Function1<String>() {
         @Override
-        public void apply(String deviceId, String dataStreamId) {
-            OneNetApi.querySingleDataStream(deviceId, dataStreamId, new GetDataService.Callback());
+        public void apply(String deviceId) {
+            OneNetApi.queryMultiDataStreams(deviceId, new GetDataService.Callback());
         }
     };
+
 
 
     @Override
@@ -85,16 +98,13 @@ public class GetDataService extends Service {
                 while (true) {
 
                     try {
-                        Thread.sleep(5000);
-                        //mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
+                        //每隔10秒执行一次
+                        Thread.sleep(10000);
 
-                        if (data != 1 && data <10) {
-                            Log.i(TAG, "run: " + "获取数据");
-                            intent.putExtra("datachange",data);
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-//                            sendBroadcast(intent);
-                        }
-                        data++;
+                        Message message = new Message();
+                        message.arg1 = 1;
+                        handler.sendMessage(message);
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -112,22 +122,81 @@ public class GetDataService extends Service {
         dataChangeBroadcast = null;
     }
 
-    //获取单个数据流
-    private void getSingleData(String response) throws JSONException{
+//    //获取单个数据流
+//    private void getSingleData(String response) throws JSONException{
+//        JSONObject jsonObject = new JSONObject(response);
+//        JSONObject data = jsonObject.getJSONObject("data");
+//
+//        getTime = data.getString("update_at");
+//
+//        Log.i(TAG, "run: "+time_value +"-----"+getTime);
+//        //判断时间是否更新了，如果更新了，则向温湿度模块发送广播，传递数据更新的消息
+//        if (!(time_value.equals(getTime))){
+//            Log.i(TAG, "run: "+"数据已经更新了");
+//            preferences.putString(Preferences.UpdateTime,getTime);
+//            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+//        }
+//
+//    }
+
+    //获取所有的数据的集合
+    private void getAllData(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
-        JSONObject data = jsonObject.getJSONObject("data");
+        JSONArray dataArray = jsonObject.getJSONArray("data");
+        JSONObject humidity = dataArray.getJSONObject(9);
+        JSONObject temp = dataArray.getJSONObject(4);
 
-        getTime = data.getString("update_at");
-        preferences.putString(Preferences.UpdateTime,getTime);
+        String h_value = humidity.getString("current_value");
+        String h_id = humidity.getString("id");
+        String h_time = humidity.getString("update_at");
+        String h_symbol = humidity.getString("unit_symbol");
 
+        String t_value = temp.getString("current_value");
+        String t_id = temp.getString("id");
+        String t_time = temp.getString("update_at");
+        String t_symbol = temp.getString("unit_symbol");
 
+        Log.i(TAG, "湿度："+h_id+"------"+h_time+"------"+h_value+h_symbol);
+        Log.i(TAG, "温度："+t_id+"------"+t_time+"------"+t_value+t_symbol);
 
-        Log.i(TAG, "时间更新"+getTime);
-
+        Log.i(TAG, "run: "+time_value +"-----"+h_time);
+        //判断时间是否更新了，如果更新了，则向温湿度模块发送广播，传递数据更新的消息
+        if (!(time_value.equals(h_time))){
+            Log.i(TAG, "run: "+"数据已经更新了");
+            updateData(h_value,t_value,h_time);
+            preferences.putString(Preferences.UpdateTime,h_time);
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        }
 
     }
 
 
+    //向服务器端写入更新的数据，用以将数据记录到自己的服务器中去
+    private void updateData(String hum,String temp,String time) {
+        //http://www.buildworld.cn/setdata.php?hum=66&temp=33&time=2017-06-03%2010:28:01
+         URL = "http://www.buildworld.cn/setdata.php?hum="+hum+"&temp="+temp+"&time="+time;
+
+
+        new Thread(){
+            @Override
+            public void run() {
+
+                try {
+                    String result = HttpUtils.doGet(URL);
+                    if (result.equals("1")){
+                        Log.i(TAG, "run: "+"数据插入到服务器成功！！！");
+                    }
+                    }catch (Exception e){
+                        Log.i(TAG, "run: "+"服务器端网络异常！！！");
+                    }
+            }
+        }.start();
+    }
+
+    //获取所有数据的接口
+    interface Function1<T> {
+        void apply(T t);
+    }
     //获取制定数据接口
     interface Function2<T>{
         void apply(T t1,T t2);
@@ -138,11 +207,8 @@ public class GetDataService extends Service {
             JsonParser jsonParser = new JsonParser();
             response = gson.toJson(jsonParser.parse(response));
             Log.i(TAG, response);
-
             //将取得数据进行解析
-            getSingleData(response);
-
-
+            getAllData(response);
         }
     }
 
