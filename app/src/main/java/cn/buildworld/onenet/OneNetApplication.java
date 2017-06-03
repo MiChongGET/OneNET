@@ -25,7 +25,7 @@ public class OneNetApplication extends Application {
         String savedApiKey = Preferences.getInstance(this).getString(Preferences.API_KEY,null);
         String saveDeviceNum = Preferences.getInstance(this).getString(Preferences.Device_Num,null);
 
-        if(savedApiKey != null){
+        if(savedApiKey != null && saveDeviceNum != null){
             OneNetApi.setAppKey(savedApiKey);
         }else {
             Intent intent = new Intent(this,EditApikeyActivity.class);

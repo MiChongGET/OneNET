@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chinamobile.iot.onenet.OneNetApi;
@@ -44,6 +45,10 @@ public class HumFragment extends Fragment {
     private TextView t_hum;
     private TextView hum_time;
     private String saveDeviceNum;
+    private TextView hum_state;
+    private ImageView img_state;
+
+
     //获取指定数据
     private Function2<String> mQuerySingleDatastreamFunction = new Function2<String>() {
         @Override
@@ -83,6 +88,8 @@ public class HumFragment extends Fragment {
 
         t_hum = (TextView) v.findViewById(R.id.t_hum);
         hum_time = (TextView) v.findViewById(R.id.h_time);
+        hum_state = (TextView) v.findViewById(R.id.hum_state);
+        img_state = (ImageView) v.findViewById(R.id.img_state);
 
         mQuerySingleDatastreamFunction.apply(saveDeviceNum,"humidity");
 
@@ -152,6 +159,17 @@ public class HumFragment extends Fragment {
          h_symbol = data.getString("unit_symbol");
          Log.i(TAG, "湿度："+h_id+"------"+h_time+"------"+h_value+h_symbol);
 
+
+        if (h_value != null){
+            double hum = Double.parseDouble(h_value);
+            if (hum > 70) {
+                img_state.setImageResource(R.drawable.danger);
+                hum_state.setText("危险！");
+            } else if (hum <= 70 && hum > 40) {
+                img_state.setImageResource(R.drawable.attention);
+                hum_state.setText("警告！");
+            } else img_state.setImageResource(R.drawable.safe);
+        }
          //记录时间
          preferences.putString(Preferences.UpdateTime,h_time);
 

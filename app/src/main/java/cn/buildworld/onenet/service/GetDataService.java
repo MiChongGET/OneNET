@@ -163,7 +163,10 @@ public class GetDataService extends Service {
         //判断时间是否更新了，如果更新了，则向温湿度模块发送广播，传递数据更新的消息
         if (!(time_value.equals(h_time))){
             Log.i(TAG, "run: "+"数据已经更新了");
-            updateData(h_value,t_value,h_time);
+            //加判断，否则会出现空值导致total界面崩溃
+            if (h_value != null && t_value != null) {
+                updateData(h_value, t_value, h_time);
+            }
             preferences.putString(Preferences.UpdateTime,h_time);
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         }

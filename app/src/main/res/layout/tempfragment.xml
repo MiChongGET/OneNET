@@ -42,7 +42,7 @@
                 android:textColor="#fff"
                 android:textSize="45dp" />
             <ImageView
-                android:id="@+id/state"
+                android:id="@+id/img_state"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/safe"
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="110dp"
                 android:layout_marginEnd="110dp"
-                android:layout_alignTop="@+id/state"
+                android:layout_alignTop="@+id/img_state"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="10dp" />

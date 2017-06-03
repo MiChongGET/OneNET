@@ -73,9 +73,11 @@ public class TotalAdapter extends BaseAdapter {
         viewHolder.hum_value.setText("湿度:"+bean.getHum_value()+"%");
         viewHolder.time.setText("更新时间:"+bean.getTime());
 
-        int temp = Integer.parseInt(bean.getTemp_value());
-        int hum = Integer.parseInt(bean.getHum_value());
+
         Log.i("单个温湿度数据", "getView: "+bean.getTemp_value()+"  "+bean.getHum_value());
+
+        double temp = Double.parseDouble(bean.getTemp_value());
+        double hum = Double.parseDouble(bean.getHum_value());
 
         if ( temp> 35){
             viewHolder.temp_sign.setImageResource(R.drawable.danger);

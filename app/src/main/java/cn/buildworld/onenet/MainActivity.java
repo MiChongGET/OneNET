@@ -66,29 +66,37 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment,FirstFragmet.newInstance()).commit();
+        String savedApiKey = Preferences.getInstance(this).getString(Preferences.API_KEY,null);
+        String saveDeviceNum = Preferences.getInstance(this).getString(Preferences.Device_Num,null);
+        if (savedApiKey.equals(null) && saveDeviceNum.equals(null)){
+            Intent intent = new Intent(this,EditApikeyActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivity(intent);
+        }
+        else {
+
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, FirstFragmet.newInstance()).commit();
 
 
-
-
-        //开启获取数据的服务
+            //开启获取数据的服务
 //        getdataIntent = new Intent();
 //        getdataIntent.setClass(MainActivity.this, GetDataService.class);
 //        startService(getdataIntent);
 
-        //接收广播
+            //接收广播
 //        registerBoradcastReceiver();
 
-        //startService(new Intent(MainActivity.this,GetDataService.class));
-
+            //startService(new Intent(MainActivity.this,GetDataService.class));
+        }
     }
 
     @Override

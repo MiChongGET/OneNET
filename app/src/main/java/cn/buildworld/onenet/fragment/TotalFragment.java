@@ -106,7 +106,7 @@ public class TotalFragment extends Fragment{
      new Thread(){
          @Override
          public void run() {
-             String result = HttpUtils.doGet("http://www.buildworld.cn/getdata.php");
+             String result = HttpUtils.doGet(URL);
 
              try {
                  listBean = new ArrayList<TotalBean>();

@@ -41,8 +41,15 @@
                 android:text="--"
                 android:textColor="#fff"
                 android:textSize="45dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageView2">
+            </LinearLayout>
+
             <ImageView
-                android:id="@+id/state"
+                android:id="@+id/img_state"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/safe"
@@ -60,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="110dp"
                 android:layout_marginEnd="110dp"
-                android:layout_alignTop="@+id/state"
+                android:layout_alignTop="@+id/img_state"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="10dp" />
