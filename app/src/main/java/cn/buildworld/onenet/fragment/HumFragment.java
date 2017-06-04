@@ -164,10 +164,10 @@ public class HumFragment extends Fragment {
             double hum = Double.parseDouble(h_value);
             if (hum > 70) {
                 img_state.setImageResource(R.drawable.danger);
-                hum_state.setText("危险！");
-            } else if (hum <= 70 && hum > 40) {
+                hum_state.setText("危险！室内湿度过高");
+            } else if (hum <= 70 && hum > 50) {
                 img_state.setImageResource(R.drawable.attention);
-                hum_state.setText("警告！");
+                hum_state.setText("警告！室内湿度较高");
             } else img_state.setImageResource(R.drawable.safe);
         }
          //记录时间

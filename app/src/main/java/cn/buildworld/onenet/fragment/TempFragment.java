@@ -45,7 +45,7 @@ public class TempFragment extends Fragment {
     private TextView temp_time;
     private  String saveDeviceNum;
 
-    private TextView hum_state;
+    private TextView temp_state;
     private ImageView img_state;
 
     //广播接收处理数据
@@ -82,7 +82,7 @@ public class TempFragment extends Fragment {
 
         t_temp = (TextView) v.findViewById(R.id.t_temp);
         temp_time = (TextView) v.findViewById(R.id.t_time);
-        hum_state = (TextView) v.findViewById(R.id.hum_state);
+        temp_state = (TextView) v.findViewById(R.id.temp_state);
         img_state = (ImageView) v.findViewById(R.id.img_state);
 
 
@@ -133,10 +133,10 @@ public class TempFragment extends Fragment {
             double hum = Double.parseDouble(t_value);
             if (hum > 35) {
                 img_state.setImageResource(R.drawable.danger);
-                hum_state.setText("危险！温度过高");
+                temp_state.setText("危险！温度过高");
             } else if (hum <= 35 && hum > 20) {
                 img_state.setImageResource(R.drawable.attention);
-                hum_state.setText("警告！温度较高");
+                temp_state.setText("警告！温度较高");
             } else img_state.setImageResource(R.drawable.safe);
         }
 

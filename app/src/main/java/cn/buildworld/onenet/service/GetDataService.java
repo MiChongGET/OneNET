@@ -177,7 +177,7 @@ public class GetDataService extends Service {
     //向服务器端写入更新的数据，用以将数据记录到自己的服务器中去
     private void updateData(String hum,String temp,String time) {
         //http://www.buildworld.cn/setdata.php?hum=66&temp=33&time=2017-06-03%2010:28:01
-         URL = "http://www.buildworld.cn/setdata.php?hum="+hum+"&temp="+temp+"&time="+time;
+         URL = "http://www.buildworld.cn/onenet/setdata.php?hum="+hum+"&temp="+temp+"&time="+time;
 
 
         new Thread(){
