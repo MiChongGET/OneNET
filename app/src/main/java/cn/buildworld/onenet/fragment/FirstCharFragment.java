@@ -64,6 +64,11 @@ public class FirstCharFragment extends Fragment {
             super.handleMessage(msg);
             if (msg.what == 404){
                 Toast.makeText(getActivity(), "网络异常", Toast.LENGTH_SHORT).show();
+                date = new String[]{"10-22", "11-22", "12-22", "1-22", "6-22", "5-23", "5-22", "6-22", "5-23", "5-22"};
+                score = new double[]{50.12, 42.5, 110, 33, 10, 74, 22, 18, 79, 20};
+                getAxisXLables();//获取x轴的标注
+                getAxisPoints();//获取坐标点
+                initLineChart();//初始化
                 return;
             }
             if (msg.arg1 == 0){
@@ -188,7 +193,7 @@ public class FirstCharFragment extends Fragment {
                     }
 //                    Log.i(TAG, "run: "+time.toString());
                     System.out.println(TAG+value.toString());
-                    if (value != null && time != null) {
+
 
                         score = new double[value.size()];
                         for (int i = 0; i < value.size(); i++) {
@@ -199,10 +204,7 @@ public class FirstCharFragment extends Fragment {
                         for (int i = 0; i < time.size(); i++) {
                             date[i] = time.get(i);
                         }
-                    }else {
-                        date = new String[]{"10-22", "11-22", "12-22", "1-22", "6-22", "5-23", "5-22", "6-22", "5-23", "5-22"};
-                        score = new double[]{50.12, 42.5, 110, 33, 10, 74, 22, 18, 79, 20};
-                    }
+
 
                     System.out.println(TAG+score.length);
                     Message message = new Message();

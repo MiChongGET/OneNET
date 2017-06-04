@@ -16,7 +16,7 @@ import java.net.URL;
 public class HttpUtils
 {
 
-	private static final int TIMEOUT_IN_MILLIONS = 6000;
+	private static final int TIMEOUT_IN_MILLIONS = 3000;
 	private static String TAG = "网络";
 
 
