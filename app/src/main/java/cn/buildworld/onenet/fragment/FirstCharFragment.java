@@ -55,7 +55,7 @@ public class FirstCharFragment extends Fragment {
 
     //网络数据请求
 //    private final String URL = "http://192.168.7.248/onenet/getdata.php";
-    private final String URL = "http://www.buildworld.cn/onenet/getValue.php";
+    private final String URL = "http://bxu2713290641.my3w.com/onenet/getHum.php";
     private List<String> time ;
     private List value ;
     private Handler handler = new Handler(){

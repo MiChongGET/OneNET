@@ -38,7 +38,7 @@ public class TotalFragment extends Fragment{
 
     private LayoutInflater layoutInflater;
     private PullRefreshLayout layout;
-    private String URL = "http://www.buildworld.cn/onenet/getdata.php";
+    private String URL = "http://bxu2713290641.my3w.com/onenet/getdata.php";
     private String TAG = "数据集合";
     private List<TotalBean> listBean;
     private TotalBean bean;
