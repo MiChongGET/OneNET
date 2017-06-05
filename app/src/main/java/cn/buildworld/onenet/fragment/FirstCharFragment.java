@@ -147,7 +147,7 @@ public class FirstCharFragment extends Fragment {
 
         // Y轴是根据数据的大小自动设置Y轴上限(在下面我会给出固定Y轴数据个数的解决方案)
         Axis axisY = new Axis();  //Y轴
-        axisY.setName("湿度/℃");//y轴标注
+        axisY.setName("湿度/%");//y轴标注
         axisY.setTextSize(10);//设置字体大小
         axisY.setTextColor(Color.BLACK);
         data.setAxisYLeft(axisY);  //Y轴设置在左边
