@@ -33,4 +33,13 @@ public class TotalBean {
     public void setTime(String time) {
         this.time = time;
     }
+
+    @Override
+    public String toString() {
+        return "TotalBean{" +
+                "hum_value='" + hum_value + '\'' +
+                ", temp_value='" + temp_value + '\'' +
+                ", time='" + time + '\'' +
+                '}';
+    }
 }

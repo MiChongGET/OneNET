@@ -12,15 +12,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.chinamobile.iot.onenet.OneNetApi;
+import com.chinamobile.iot.onenet.OneNetApiCallback;
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.buildworld.onenet.R;
+import cn.buildworld.onenet.bean.DataPoints;
 import cn.buildworld.onenet.util.HttpUtils;
+import cn.buildworld.onenet.util.Preferences;
+import lecho.lib.hellocharts.formatter.LineChartValueFormatter;
+import lecho.lib.hellocharts.formatter.SimpleLineChartValueFormatter;
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.model.Axis;
@@ -41,6 +51,8 @@ public class SecondCharFragment extends Fragment {
     private ViewPager viewPager;
     private String TAG = "温度折线图";
 
+    private String saveDeviceNum;
+
     //折线图
     private LineChartView lineChart;
     //    String[] date = {"10-22", "11-22", "12-22", "1-22", "6-22", "5-23", "5-22", "6-22", "5-23", "5-22"};//X轴的标注
@@ -51,33 +63,6 @@ public class SecondCharFragment extends Fragment {
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
 
 
-    //网络数据请求
-//    private final String URL = "http://192.168.7.248/onenet/getdata.php";
-    private final String URL = "http://bxu2713290641.my3w.com/onenet/getHum.php";
-    private List<String> time ;
-    private List value ;
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 404){
-                Toast.makeText(getActivity(), "网络异常", Toast.LENGTH_SHORT).show();
-                date = new String[]{"10-22", "11-22", "12-22", "1-22", "6-22", "5-23", "5-22", "6-22", "5-23", "5-22"};
-                score = new double[]{50.12, 42.5, 110, 33, 10, 74, 22, 18, 79, 20};
-                getAxisXLables();//获取x轴的标注
-                getAxisPoints();//获取坐标点
-                initLineChart();//初始化
-                return;
-            }
-            if (msg.arg1 == 0){
-                //折线图功能模块的实现
-                getAxisXLables();//获取x轴的标注
-                getAxisPoints();//获取坐标点
-                initLineChart();//初始化
-            }
-
-        }
-    };
 
     public SecondCharFragment() {
     }
@@ -95,7 +80,62 @@ public class SecondCharFragment extends Fragment {
 
         lineChart = (LineChartView) view.findViewById(R.id.line_chart);
 
-        doAll();
+        saveDeviceNum = Preferences.getInstance(getActivity()).getString(Preferences.Device_Num,null);
+
+        //获取数据点的数据
+        String savedApiKey = Preferences.getInstance(getActivity()).getString(Preferences.API_KEY,null);
+        OneNetApi.setAppKey(savedApiKey);
+        Map<String,String> map = new HashMap<String, String>();
+        //设置我们要查询的数据流的名称
+        map.put("datastream_id","temperature");
+        map.put("limit","20");
+        OneNetApi.queryDataPoints(saveDeviceNum, map, new OneNetApiCallback() {
+
+            /**
+             * 数据请求成功
+             * @param response 返回来的json数据
+             */
+            @Override
+            public void onSuccess(String response) {
+
+                //使用谷歌的json解析框架来解析数据
+                Gson gson = new Gson();
+                //自己封装了结果集的实体类
+                DataPoints dataPoints = gson.fromJson(response, DataPoints.class);
+
+                System.out.println("获取数据点个数:"+dataPoints.getData().getCount());
+
+                //结果的个数
+                int count = dataPoints.getData().getCount();
+
+                //初始化数组
+                date = new String[count];
+                score = new double[count];
+
+                //温湿度数据和时间的集合
+                List<DataPoints.DataBean.DatastreamsBean.DatapointsBean> datapoints = dataPoints.getData().getDatastreams().get(0).getDatapoints();
+                for (int i = 0;i<datapoints.size();i++){
+                    date[i] = datapoints.get(i).getAt();
+                    score[i] = Double.parseDouble(datapoints.get(i).getValue());
+                }
+
+                getAxisXLables();//获取x轴的标注
+                getAxisPoints();//获取坐标点
+                initLineChart();//初始化
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+                //当获取数据失败的时候
+                System.out.println("e = " + e);
+                date = new String[]{"10-22", "11-22", "12-22", "1-22", "6-22", "5-23", "5-22", "6-22", "5-23", "5-22"};
+                score = new double[]{50.12, 42.5, 110, 33, 10, 74, 22, 18, 79, 20};
+                getAxisXLables();//获取x轴的标注
+                getAxisPoints();//获取坐标点
+                initLineChart();//初始化
+            }
+        });
 
         return view;
     }
@@ -121,12 +161,15 @@ public class SecondCharFragment extends Fragment {
         Line line = new Line(mPointValues).setColor(Color.parseColor("#FFCD41"));  //折线的颜色（橙色）
         List<Line> lines = new ArrayList<Line>();
         line.setShape(ValueShape.CIRCLE);//折线图上每个数据点的形状  这里是圆形 （有三种 ：ValueShape.SQUARE  ValueShape.CIRCLE  ValueShape.DIAMOND）
-        line.setCubic(false);//曲线是否平滑，即是曲线还是折线
-        line.setFilled(false);//是否填充曲线的面积
+        line.setCubic(true);//曲线是否平滑，即是曲线还是折线
+        line.setFilled(true);//是否填充曲线的面积
         line.setHasLabels(true);//曲线的数据坐标是否加上备注
 //      line.setHasLabelsOnlyForSelected(true);//点击数据坐标提示数据（设置了这个line.setHasLabels(true);就无效）
         line.setHasLines(true);//是否用线显示。如果为false 则没有曲线只有点显示
         line.setHasPoints(true);//是否显示圆点 如果为false 则没有原点只有点显示（每个数据点都是个大的圆点）
+        LineChartValueFormatter chartValueFormatter = new SimpleLineChartValueFormatter(2);
+        line.setFormatter(chartValueFormatter);//显示小数点
+
         lines.add(line);
         LineChartData data = new LineChartData();
         data.setLines(lines);
@@ -147,6 +190,7 @@ public class SecondCharFragment extends Fragment {
         Axis axisY = new Axis();  //Y轴
         axisY.setName("温度/℃");//y轴标注
         axisY.setTextSize(10);//设置字体大小
+        axisY.setMaxLabelChars(8);
         axisY.setTextColor(Color.BLACK);
         data.setAxisYLeft(axisY);  //Y轴设置在左边
         //data.setAxisYRight(axisY);  //y轴设置在右边
@@ -169,52 +213,4 @@ public class SecondCharFragment extends Fragment {
     }
 
 
-    public void doAll() {
-
-        new Thread() {
-            @Override
-            public void run() {
-                String result = HttpUtils.doGet(URL);
-
-                time = new ArrayList<String>();
-                value = new ArrayList<Double>();
-
-                try {
-                    JSONArray jsonArray = new JSONArray(result);
-                    JSONObject object;
-                    System.out.println(TAG+result);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        object = (JSONObject) jsonArray.get(i);
-                        value.add(Double.valueOf(object.getString("temp")));
-                        time.add(String.valueOf(object.getString("time")));
-                    }
-//                    Log.i(TAG, "run: "+time.toString());
-                    System.out.println(TAG+value.toString());
-                    score = new double[value.size()];
-                    for (int i=0 ;i<value.size();i++){
-                        score[i] = (double) value.get(i);
-                    }
-
-                    date = new String[time.size()];
-                    for (int i = 0;i<time.size();i++){
-                        date[i] = time.get(i);
-                    }
-
-
-                    System.out.println(TAG+score.length);
-                    Message message = new Message();
-                    message.arg1 = 0;
-                    handler.sendMessage(message);
-
-                } catch (Exception e) {
-                    Message message = handler.obtainMessage();
-                    message.what = 404;
-                    handler.sendMessage(message);
-                }
-
-
-            }
-        }.start();
-
-    }
 }

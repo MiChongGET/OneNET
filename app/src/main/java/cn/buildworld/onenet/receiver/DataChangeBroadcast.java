@@ -15,5 +15,7 @@ public class DataChangeBroadcast extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         Log.i(TAG, "onReceive: "+"数据更新广播");
+
+
     }
 }

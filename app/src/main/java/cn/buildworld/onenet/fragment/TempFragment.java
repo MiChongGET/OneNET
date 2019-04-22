@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -53,6 +55,8 @@ public class TempFragment extends Fragment {
     private IntentFilter intentFilter;
     private BroadcastReceiver receiver;
 
+    private static boolean flag = true;
+
     //获取指定数据
     private TempFragment.Function2<String> mQuerySingleDatastreamFunction = new Function2<String>() {
         @Override
@@ -95,28 +99,67 @@ public class TempFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //处理广播
-        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
-        intentFilter = new IntentFilter();
-        intentFilter.addAction("datachange");
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.i(TAG, "接收到了广播");
+//        //处理广播
+//        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
+//        intentFilter = new IntentFilter();
+//        intentFilter.addAction("datachange");
+//        receiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                Log.i(TAG, "接收到了广播");
+//                mQuerySingleDatastreamFunction.apply(saveDeviceNum,"temperature");
+//            }
+//        };
+//        broadcastManager.registerReceiver(receiver,intentFilter);
+
+        //执行定时器任务
+        setTimer();
+    }
+
+//    //注销广播
+//
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        broadcastManager.unregisterReceiver(receiver);
+//    }
+
+    //开启定时器
+    private void setTimer(){
+        mHandler.postDelayed(runnable, 3000);
+    }
+
+    //接收handler传递过来的消息
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1){
+                //执行界面更新操作
+                //获取数据
                 mQuerySingleDatastreamFunction.apply(saveDeviceNum,"temperature");
             }
-        };
-        broadcastManager.registerReceiver(receiver,intentFilter);
-    }
 
-    //注销广播
+        }
+    };
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        broadcastManager.unregisterReceiver(receiver);
-    }
+    //定时任务
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            //在这里执行定时需要的操作
+
+            if (flag) {
+
+                //发送消息，执行定时器
+                mHandler.postDelayed(this, 3000);
+                mHandler.sendEmptyMessage(1);
+            }
+        }
+    };
+
 
     //获取温湿度信息
     //获取单个数据流

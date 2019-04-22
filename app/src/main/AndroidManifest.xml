@@ -3,6 +3,8 @@
     package="cn.buildworld.onenet">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:name=".OneNetApplication"
         android:allowBackup="true"
@@ -30,7 +32,7 @@
 
         <receiver android:name=".receiver.DataChangeBroadcast">
             <intent-filter android:priority="1000">
-                <action android:name="com.datachange"/>
+                <action android:name="datachange"/>
             </intent-filter>
         </receiver>
     </application>

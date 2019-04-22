@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="请输入API_KEY"
-            android:text="ivgtJoCYq8k01bha2CvSprTaUDQ="/>
+            android:text="STWHFYWTm40K930LpruRaUX5EEU="/>
     </android.support.design.widget.TextInputLayout>
 
     <Button

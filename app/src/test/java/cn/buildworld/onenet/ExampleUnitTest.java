@@ -1,6 +1,7 @@
 package cn.buildworld.onenet;
 
-import android.util.Log;
+import com.chinamobile.iot.onenet.OneNetApi;
+import com.chinamobile.iot.onenet.OneNetApiCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,7 +13,7 @@ import java.util.List;
 
 import cn.buildworld.onenet.util.HttpUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -49,6 +50,22 @@ public class ExampleUnitTest {
         System.out.println(time.toString());
         System.out.println(value.toString());
 
+    }
+
+    @Test
+    public void testGetDatapointsApi() {
+        OneNetApi.addApiKey("ivgtJoCYq8k01bha2CvSprTaUDQ=", new OneNetApiCallback() {
+            @Override
+            public void onSuccess(String response) {
+                System.out.println("response = " + response);
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+                System.out.println("e = [" + e + "]");
+            }
+        });
     }
 
 }
